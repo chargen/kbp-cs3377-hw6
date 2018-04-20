@@ -1,0 +1,15 @@
+# Kenneth Palmer
+# Kenneth.Palmer@UTDallas.edu
+# CS 3377.502
+#
+# .gitignore - tells git to ignore certain files.
+
+# --- EMACS --- #
+# backup files
+*~
+
+# ---  C++  --- #
+*.o
+
+# --- OTHER --- #
+Program6
