@@ -19,7 +19,10 @@ EXECFILE = Program6
 OBJS = main.o
 
 
-all: $(EXECFILE)
+all: pull $(EXECFILE)
+
+pull:
+	git pull
 
 clean:
 	rm -f $(OBJS) $(EXECFILE) *.P *~ \#*
@@ -28,3 +31,7 @@ clean:
 $(EXECFILE): $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
 
+commit:
+	MSG ?= $(shell read -p "Commit message: " msg; echo $$msg)
+	git add -A
+	git commit -m "$(MSG)"
