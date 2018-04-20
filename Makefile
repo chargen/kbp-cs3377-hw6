@@ -18,11 +18,13 @@ EXECFILE = Program6
 
 OBJS = main.o
 
-
-all: pull $(EXECFILE)
+#The specification says that "Your Makefile should pull the project and build," so that's why make automatically defaults to pulling and building
+all: pull build
 
 pull:
-	git pull
+	git pull origin working
+
+build: $(EXECFILE)
 
 clean:
 	rm -f $(OBJS) $(EXECFILE) *.P *~ \#*
@@ -32,6 +34,6 @@ $(EXECFILE): $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
 
 commit:
-	MSG ?= $(shell read -p "Commit message: " msg; echo $$msg)
+	$(eval MSG := $(shell read -p "Commit message: " msg; echo $$msg))
 	git add -A
 	git commit -m "$(MSG)"
