@@ -7,3 +7,9 @@
 # --- EMACS --- #
 # backup files
 *~
+
+# ---  C++  --- #
+*.o
+
+# --- OTHER --- #
+Program6
