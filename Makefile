@@ -22,7 +22,7 @@ OBJS = main.o
 all: pull build
 
 pull:
-	git pull origin working
+	git pull origin master
 
 build: $(EXECFILE)
 
