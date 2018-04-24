@@ -19,7 +19,7 @@ EXECFILE = Program6
 OBJS = main.o
 
 #The specification says that "Your Makefile should pull the project and build," so that's why make automatically defaults to pulling and building
-all: build #pull
+all: build pull
 
 pull:
 	git pull origin master
