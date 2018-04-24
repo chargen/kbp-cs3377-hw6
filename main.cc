@@ -122,7 +122,7 @@ int main()
   setCDKMatrixCell(myMatrix, 1, 3, recordCount);
 
   /* Display record contents */
-  for(uint64_t i=0; i<numRecords; i++){
+  for(uint64_t i=0; i<numRecords && i<5; i++){
     setCDKMatrixCell(myMatrix, i+2, 1, lengths[i]);
     setCDKMatrixCell(myMatrix, i+2, 2, records[i]);
   }
