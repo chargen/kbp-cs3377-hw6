@@ -130,14 +130,18 @@ int main()
   /* Render the contents of the cells */
   drawCDKMatrix(myMatrix, true);
 
-  /* so we can see results */
-  sleep (10);
-
+  /* Move focus to a temporary subwindowWait for keystroke */
+  WINDOW *temp_window = derwin(window, 1, 1, 0, 0);
+  wgetch(temp_window);
+  delwin(temp_window);
 
   // Cleanup screen
   endCDK();
 
   // Delete Pointers
+
+  //Note, temp_window was already deleted by delwin
+
   for(uint64_t i=0; i<numRecords; i++){
     delete records[i];
     delete lengths[i];
