@@ -11,7 +11,7 @@
  */
 
 #include <iostream>
-#include <cstdint>
+#include <stdint.h>
 #include <fstream>
 #include "cdk.h"
 
@@ -129,19 +129,15 @@ int main()
 
   /* Render the contents of the cells */
   drawCDKMatrix(myMatrix, true);
-
-  /* Move focus to a temporary subwindowWait for keystroke */
-  WINDOW *temp_window = derwin(window, 1, 1, 0, 0);
-  wgetch(temp_window);
-  delwin(temp_window);
+  
+  //wait for keystroke
+  char char_temp;
+  cin >> char_temp;
 
   // Cleanup screen
   endCDK();
 
   // Delete Pointers
-
-  //Note, temp_window was already deleted by delwin
-
   for(uint64_t i=0; i<numRecords; i++){
     delete records[i];
     delete lengths[i];
