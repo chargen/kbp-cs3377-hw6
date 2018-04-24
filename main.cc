@@ -18,7 +18,7 @@
 
 #define MATRIX_WIDTH 3
 #define MATRIX_HEIGHT 5
-#define BOX_WIDTH 30
+#define BOX_WIDTH 24
 #define MATRIX_NAME_STRING "Binary File Contents"
 
 using namespace std;
@@ -40,18 +40,43 @@ public:
 int main()
 {
   ifstream binary_reader("cs3377.bin",ios::in|ios::binary);
+
+  if(!binary_reader.is_open()){
+    cerr << "[FATAL]\tCould not open binary file." << endl;
+    return -1;
+  }
+
   BinaryFileHeader *bin_head = new BinaryFileHeader();
   binary_reader.read((char *)bin_head, sizeof(BinaryFileHeader));
-  cout << bin_head->magicNumber << endl;
-  cout << bin_head->versionNumber << endl;
-  cout << bin_head->numRecords << endl;
   
   char magic[maxRecordStringLength];
   sprintf(magic, "Magic: 0x%X",bin_head->magicNumber);
   char version[maxRecordStringLength];
   sprintf(version, "Version: %u",bin_head->versionNumber);
-  char records[maxRecordStringLength];
-  sprintf(records, "NumRecords: %lu",bin_head->numRecords);
+  char recordCount[maxRecordStringLength];
+  sprintf(recordCount, "NumRecords: %lu",bin_head->numRecords);
+
+  uint64_t numRecords = bin_head->numRecords;
+
+  char** records; //Array of content cstrings
+  records = (char **)calloc(numRecords, sizeof(char *)); //Allocate the space to store the array
+
+  char** lengths; //Array of formatted strlen cstrings 
+  lengths = (char **)calloc(numRecords, sizeof(char *)); //Allocate the space to store the array
+  for(uint64_t i=0; i<numRecords; i++){
+    records[i] = (char *)calloc(maxRecordStringLength, sizeof(char)); //Allocate the space to store each string
+    lengths[i] = (char *)calloc(maxRecordStringLength, sizeof(char)); //Allocate the space to store each string
+  }
+
+
+  for(uint64_t i=0; i<numRecords; i++){
+    BinaryFileRecord *record = new BinaryFileRecord();
+    binary_reader.read((char *)record, sizeof(BinaryFileRecord));
+    strcpy(records[i],record->stringBuffer);
+    sprintf(lengths[i], "strlen: %hhu", record->strLength);
+    delete record;
+  }
+
 
   WINDOW	*window;
   CDKSCREEN	*cdkscreen;
@@ -94,8 +119,16 @@ int main()
    */
   setCDKMatrixCell(myMatrix, 1, 1, magic);
   setCDKMatrixCell(myMatrix, 1, 2, version);
-  setCDKMatrixCell(myMatrix, 1, 3, records);
-  drawCDKMatrix(myMatrix, true);    /* required  */
+  setCDKMatrixCell(myMatrix, 1, 3, recordCount);
+
+  /* Display record contents */
+  for(uint64_t i=0; i<numRecords; i++){
+    setCDKMatrixCell(myMatrix, i+2, 1, lengths[i]);
+    setCDKMatrixCell(myMatrix, i+2, 2, records[i]);
+  }
+
+  /* Render the contents of the cells */
+  drawCDKMatrix(myMatrix, true);
 
   /* so we can see results */
   sleep (10);
@@ -103,4 +136,16 @@ int main()
 
   // Cleanup screen
   endCDK();
+
+  // Delete Pointers
+  for(uint64_t i=0; i<numRecords; i++){
+    delete records[i];
+    delete lengths[i];
+  }
+  delete records;
+  delete lengths;
+  delete bin_head;
+  
+  return 0;
+  
 }
